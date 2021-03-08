@@ -46,6 +46,13 @@
     register: jenkins_http_config
     become: true
 
+  - name: Disable Jenkins setup wizard
+    lineinfile:
+     dest=/etc/default/jenkins
+     regexp=^JAVA_ARGS=
+     line=JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
+    become: true
+
   - name: Create initialization scripts directory
     file: path=/var/lib/jenkins/init.groovy.d
           state=directory
@@ -57,14 +64,6 @@
   - name: Add initialization script to setup basic security
     template: src=security.groovy.j2
               dest=/var/lib/jenkins/init.groovy.d/security.groovy
-    become: true
-
-  - name: Bypass - jenkins.install.InstallUtil.lastExecVersion
-    copy: src=/var/lib/jenkins/jenkins.install.UpgradeWizard.state
-          dest=/var/lib/jenkins/jenkins.install.InstallUtil.lastExecVersion
-          owner=jenkins
-          group=jenkins
-          remote_src=True
     become: true
 
   - stat: path=/var/lib/jenkins/secrets/initialAdminPassword
