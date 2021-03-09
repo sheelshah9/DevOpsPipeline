@@ -1,5 +1,7 @@
 ##  Interim progress (03/09/2021)
 
+> Checkpoint-1 tasks- [Milestone](https://github.ncsu.edu/cscdevops-spring2021/DEVOPS-21/milestone/1?closed=1) 
+
 ### Current progress
   - Developed Node.js project which will act as a driver to setup and run the pipeline commands.
   - Provisioned infrastructure(Config -srv) using bakerx with necessary configurations.
