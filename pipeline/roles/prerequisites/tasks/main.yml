@@ -1,0 +1,13 @@
+---
+- name: Install Java
+  apt:
+   name: openjdk-8-jre
+   state: present
+   update_cache: yes
+  become: true
+
+- name: Install Git
+  apt:
+   name: git
+   state: present
+  become: true

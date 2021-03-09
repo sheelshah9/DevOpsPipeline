@@ -1,0 +1,7 @@
+---
+- name: Install MongoDB
+  apt:
+   name: mongodb
+   state: present
+   update_cache: yes
+  become: true
