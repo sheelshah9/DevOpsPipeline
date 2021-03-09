@@ -29,4 +29,6 @@
     - setup build command: pipeline build checkbox.io -u admin -p admin
     - Clone checkbox.io repo, install dependencies, start mongodb and run tests.
   - Install necessary plugins in jenkins as required.  
-
+  
+### Notes:
+  * nnparik2 had a commit made in the name of ultraultimated which is his github.com user id for [Issue-2](https://github.ncsu.edu/cscdevops-spring2021/DEVOPS-21/issues/2)
