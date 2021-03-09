@@ -1,7 +1,6 @@
 ---
 - hosts: localhost
-  vars:
-   jenkins_http_port: 9000
+
   roles:
       - prerequisites
       - jenkins

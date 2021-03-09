@@ -1,4 +1,5 @@
 ---
+
 - name: add jenkins repo key
   apt_key:
    url: https://pkg.jenkins.io/debian/jenkins.io.key
@@ -23,7 +24,7 @@
    backrefs: true
    dest: /etc/default/jenkins
    regexp: '^HTTP_PORT='
-   line: 'HTTP_PORT={{jenkins_http_port}}'
+   line: 'HTTP_PORT={{ jenkins_port }}'
    mode: 0644
   register: jenkins_http_config
   become: true
@@ -36,7 +37,7 @@
   become: true
 
 - name: Create initialization scripts directory
-  file: path=/var/lib/jenkins/init.groovy.d
+  file: path={{ jenkins_var_dir }}/init.groovy.d
         state=directory
         owner=jenkins
         group=jenkins
@@ -45,15 +46,15 @@
 
 - name: Add initialization script to setup basic security
   template: src=security.groovy.j2
-            dest=/var/lib/jenkins/init.groovy.d/security.groovy
+            dest={{ jenkins_var_dir }}/init.groovy.d/security.groovy
   become: true
 
-- stat: path=/var/lib/jenkins/secrets/initialAdminPassword
+- stat: path={{ jenkins_var_dir }}/secrets/initialAdminPassword
   register: adminpassword
   become: true
 
 - name: Bypass - initialAdminPassword
-  shell: mv /var/lib/jenkins/secrets/initialAdminPassword /root
+  shell: mv {{ jenkins_var_dir }}/secrets/initialAdminPassword /root
   when: adminpassword.stat.exists == True
   become: true
 
