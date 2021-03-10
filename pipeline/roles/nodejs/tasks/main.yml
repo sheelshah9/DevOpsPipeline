@@ -1,0 +1,29 @@
+---
+- name: Node.js - Get script
+  get_url:
+   url: "http://deb.nodesource.com/setup_14.x"
+   dest: "{{ node_script_path }}/nodejs.sh"
+
+- name: Node.js - Set execution permission to script
+  file:
+   path: "{{ node_script_path }}/nodejs.sh"
+   mode: "u+x"
+
+- name: Node.js - Execute installation script
+  command: "{{ node_script_path }}/nodejs.sh"
+  become: true
+
+- name: Node.js - Remove installation script
+  file:
+   path: "{{ node_script_path }}/nodejs.sh"
+   state: absent
+
+- name: Node.js - Install Node.js
+  apt:
+   pkg:
+    - build-essential
+    - nodejs
+   state: present
+   update_cache: yes
+  become: true
+
