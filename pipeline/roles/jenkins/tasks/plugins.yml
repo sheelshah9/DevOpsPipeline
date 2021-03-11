@@ -1,0 +1,6 @@
+- name: Install plugin
+  jenkins_plugin:
+   name: build-pipeline-plugin
+   url_username: admin
+   url_password: admin
+   url: "http://127.0.0.1:{{ jenkins_port }}"

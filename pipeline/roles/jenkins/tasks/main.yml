@@ -19,44 +19,9 @@
    update_cache: yes
   become: true
 
-- name: Set HTTP port in Jenkins config.
-  lineinfile:
-   backrefs: true
-   dest: /etc/default/jenkins
-   regexp: '^HTTP_PORT='
-   line: 'HTTP_PORT={{ jenkins_port }}'
-   mode: 0644
-  register: jenkins_http_config
-  become: true
+- include_tasks: settings.yml
 
-- name: Disable Jenkins setup wizard
-  lineinfile:
-   dest=/etc/default/jenkins
-   regexp=^JAVA_ARGS=
-   line=JAVA_ARGS="-Djava.awt.headless=true -Djenkins.install.runSetupWizard=false"
-  become: true
-
-- name: Create initialization scripts directory
-  file: path={{ jenkins_var_dir }}/init.groovy.d
-        state=directory
-        owner=jenkins
-        group=jenkins
-        mode=0775
-  become: true
-
-- name: Add initialization script to setup basic security
-  template: src=security.groovy.j2
-            dest={{ jenkins_var_dir }}/init.groovy.d/security.groovy
-  become: true
-
-- stat: path={{ jenkins_var_dir }}/secrets/initialAdminPassword
-  register: adminpassword
-  become: true
-
-- name: Bypass - initialAdminPassword
-  shell: mv {{ jenkins_var_dir }}/secrets/initialAdminPassword /root
-  when: adminpassword.stat.exists == True
-  become: true
+- include_tasks: plugins.yml
 
 - service: name=jenkins state=restarted
   become: true
