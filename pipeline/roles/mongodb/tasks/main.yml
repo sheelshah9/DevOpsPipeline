@@ -5,3 +5,21 @@
    state: present
    update_cache: yes
   become: true
+
+- name: install pip3
+  apt: name=python3-pip state=present
+  tags: ansible
+  become: true
+
+- name: Install pymongo python package
+  pip:
+   name: pymongo
+
+- name: create user admin and set password admin
+  no_log: true
+  mongodb_user:
+   database: admin
+   name: admin
+   password: admin
+   roles: readWrite
+   state: present
