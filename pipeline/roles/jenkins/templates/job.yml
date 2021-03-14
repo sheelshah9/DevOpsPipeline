@@ -1,0 +1,10 @@
+- job:
+    name: new-pipeline
+    project-type: freestyle
+    builders:
+      - shell: |
+              git clone https://github.com/chrisparnin/checkbox.io.git
+              cd ./checkbox.io/server-side/site/
+              npm install
+              node server.js
+              npm test

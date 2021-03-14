@@ -1,6 +1,31 @@
-- name: Install plugin
+- name: Install Plugins on behalf of jenkins user
   jenkins_plugin:
-   name: build-pipeline-plugin
+   name: "{{ item }}"
+   url: http://localhost:9000
    url_username: admin
    url_password: admin
-   url: "http://127.0.0.1:{{ jenkins_port }}"
+  environment:
+   http_proxy: http://admin:admin@localhost:9000
+   https_proxy: http://admin:admin@localhost:9000
+  register: plugin_result
+  until: plugin_result is success
+  retries: 10
+  delay: 10
+  with_items: # no version = latest
+   - build-pipeline-plugin
+
+- name: install pip3
+  apt: name=python3-pip state=present
+  tags: ansible
+  become: true
+
+- name: pip install jenkins-job
+  pip:
+   name: jenkins-job-builder
+
+- name: apt install jenkins job builder
+  apt:
+   name: jenkins-job-builder
+   state: present
+   update_cache: yes
+  become: true

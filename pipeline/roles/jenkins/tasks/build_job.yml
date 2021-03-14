@@ -1,0 +1,15 @@
+- name: Creating an empty jenkins_jobs file
+  file:
+   path: "/etc/jenkins_jobs/jenkins_jobs.ini"
+   state: touch
+  become: true
+
+- name: Setup jenkins jobs builder ini file
+  template:
+   src: jenkins_jobs.ini.j2
+   dest: "/etc/jenkins_jobs/jenkins_jobs.ini"
+  become: true
+
+- name: build jenkins job
+  shell: jenkins-jobs update /bakerx/pipeline/roles/jenkins/templates/job.yml 
+
