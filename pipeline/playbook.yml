@@ -6,3 +6,4 @@
       - jenkins
       - nodejs
       - mongodb
+      - set_env

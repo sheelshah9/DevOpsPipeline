@@ -1,0 +1,15 @@
+---
+os_environment:
+- key: APP_PORT
+  value: 3002
+- key: MONGO_PORT
+  value: 27017
+- key: MONGO_USER
+  value: admin
+- key: MONGO_PASSWORD
+  value: admin
+- key: MONGO_IP
+  value: localhost
+ 
+  
+

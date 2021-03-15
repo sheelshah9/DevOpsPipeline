@@ -1,0 +1,13 @@
+---
+- name: Insert a line at the end of a file.
+  lineinfile:
+   path: /etc/environment
+   line: "{{ item.key }}={{ item.value}}"
+  with_items: "{{ os_environment }}"
+  become: true  
+     
+- name: source new variables
+  shell: source ~/.bashrc
+  args:
+   executable: /bin/bash
+
