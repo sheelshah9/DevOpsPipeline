@@ -3,7 +3,8 @@
 
   roles:
       - prerequisites
+      - set_env
       - jenkins
       - nodejs
       - mongodb
-      - set_env
+      

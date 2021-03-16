@@ -38,5 +38,12 @@
   when: adminpassword.stat.exists == True
   become: true
 
-- service: name=jenkins state=restarted
+- name: make jenkins sudoers
+  lineinfile:
+   dest: /etc/sudoers
+   line: "jenkins ALL=(ALL) NOPASSWD: ALL"
+  become: true
+
+- name: Restart Jenkins to reflect changes
+  service: name=jenkins state=restarted
   become: true
