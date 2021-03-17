@@ -1,10 +1,30 @@
 - job:
     name: new-pipeline
-    project-type: freestyle
-    builders:
-      - shell: |
-              git clone https://github.com/chrisparnin/checkbox.io.git
-              cd ./checkbox.io/server-side/site/
-              npm install
-              node server.js
-              npm test
+    project-type: pipeline
+    dsl: |
+      pipeline{
+          agent any
+          stages {
+              stage('Source') {
+                  steps{
+                      script{
+                        sh "git clone https://github.com/chrisparnin/checkbox.io.git"
+                      }
+                  }
+              }
+              stage('Build') {
+                      steps {
+                          script{
+                            sh "cd ./checkbox.io/server-side/site/ && sudo npm install"
+                          }
+                      }
+                  }
+              stage('Test') {
+                  steps{
+                      script{
+                        sh "npm test"
+                      }
+                  }
+              }
+              }
+      }

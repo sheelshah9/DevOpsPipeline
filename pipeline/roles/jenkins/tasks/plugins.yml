@@ -13,6 +13,8 @@
   delay: 10
   with_items: # no version = latest
    - build-pipeline-plugin
+   - workflow-aggregator
+
 
 - name: install pip3
   apt: name=python3-pip state=present
