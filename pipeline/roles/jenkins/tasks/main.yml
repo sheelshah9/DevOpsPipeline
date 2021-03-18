@@ -23,4 +23,27 @@
 
 - include_tasks: plugins.yml
 
+- name: Generate Crumb for API token (JJS)
+  shell: curl -s --cookie-jar /tmp/cookies -u admin:admin http://localhost:9000/crumbIssuer/api/json
+  register: crumb_res
+
+- name: Generate API token
+  shell: curl -X POST -H 'Jenkins-Crumb:{{crumb_res.stdout|from_json|json_query('crumb')}}' --cookie /tmp/cookies http://localhost:9000/me/descriptorByName/jenkins.security.ApiTokenProperty/generateNewToken?newTokenName=\checkbox -u admin:admin
+  register: api_token
+
+- name: Restart Jenkins to reflect changes
+  service: name=jenkins state=restarted
+  become: true
+
+- name: Wait until Jenkins web interface is available
+  wait_for: "host=192.168.33.20 port={{ jenkins_port }} state=present delay=5 timeout=300"
+
+- name: Wait until Jenkins web interface is ready
+  command: 'curl -s -o /dev/null -w "%{http_code}" http://192.168.33.20:{{ jenkins_port}}/cli/'
+  register: result
+  until: 'result.stdout[0] in ["2", "3"]' # 2xx or 3xx status code
+  retries: 50
+  delay: 10
+  changed_when: false
+
 - include_tasks: build_job.yml

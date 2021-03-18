@@ -1,30 +1,40 @@
 - job:
-    name: new-pipeline
+    name: checkbox.io
     project-type: pipeline
     dsl: |
-      pipeline{
+       pipeline {
           agent any
+          options {
+                 skipDefaultCheckout(true)
+          }
           stages {
-              stage('Source') {
-                  steps{
-                      script{
-                        sh "git clone https://github.com/chrisparnin/checkbox.io.git"
-                      }
-                  }
-              }
-              stage('Build') {
-                      steps {
-                          script{
-                            sh "cd ./checkbox.io/server-side/site/ && sudo npm install"
+                 stage('Source') {
+                    steps{
+                        script{
+                           sh "git clone https://github.com/chrisparnin/checkbox.io.git"
                           }
                       }
-                  }
-              stage('Test') {
-                  steps{
-                      script{
-                        sh "npm test"
-                      }
-                  }
-              }
-              }
-      }
+                    }
+                    stage('Build') {
+                         steps {
+                             script{
+                                 sh "cd ./checkbox.io/server-side/site/ && sudo npm install"
+                                 sh "sudo npm install -g pm2"
+                                 sh "pm2 start ./checkbox.io/server-side/site/server.js"
+                               }
+                            }
+                        }
+                    stage('Test') {
+                        steps{
+                            script{
+                              sh "cd ./checkbox.io/server-side/site && npm test"
+                            }
+                        }
+                    }
+                }          
+                post { 
+                    always { 
+                        cleanWs()
+                    }
+                }                
+            }
