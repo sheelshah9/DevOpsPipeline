@@ -9,7 +9,8 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",
-    "yargs": "^15.4.1",
-    "jenkins": "^0.28.1"
+    "jenkins": "^0.28.1",
+    "jenkins-log-stream": "^2.0.0",
+    "yargs": "^15.4.1"
   }
 }

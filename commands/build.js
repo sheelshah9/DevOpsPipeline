@@ -1,5 +1,8 @@
 var jenkins = require('jenkins');
-async function getBuildStatus(job, id) {
+var util = require('util');
+var exec = require('child_process').exec;
+var JenkinsLogStream = require('jenkins-log-stream');
+async function getBuildStatus(job, id) {	
     return new Promise(async function(resolve, reject)
     {
         console.log(`Fetching ${job}: ${id}`);
@@ -47,8 +50,15 @@ async function main(argv)
     console.log( `Build result: ${build.result}` );
 
     console.log(`Build output`);
-    let output = await jenkins.build.log({name: argv.name, number: buildId});
-    console.log( output );
+
+    var stream = new JenkinsLogStream({
+     'baseUrl': `http://${argv.username}:${argv.password}@192.168.33.20:9000`,
+     'job': argv.name,
+     'build': 'lastBuild',
+     'pollInterval': 1000
+    });
+
+    stream.pipe(process.stdout);
 
 }
 
