@@ -15,11 +15,11 @@
   pip:
    name: pymongo
 
-- name: create user admin and set password admin
+- name: create user and set password with readWrite role
   no_log: true
   mongodb_user:
    database: admin
-   name: admin
-   password: admin
+   name: "{{ username }}"
+   password: "{{ password }}"
    roles: readWrite
    state: present

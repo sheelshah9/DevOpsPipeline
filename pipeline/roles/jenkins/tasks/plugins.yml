@@ -2,11 +2,11 @@
   jenkins_plugin:
    name: "{{ item }}"
    url: http://localhost:9000
-   url_username: admin
-   url_password: admin
+   url_username: "{{ username }}"
+   url_password: "{{ password }}"
   environment:
-   http_proxy: http://admin:admin@localhost:9000
-   https_proxy: http://admin:admin@localhost:9000
+   http_proxy: "http://{{ username }}:{{ password }}@localhost:9000"
+   https_proxy: "http://{{ username }}:{{ password }}@localhost:9000"
   register: plugin_result
   until: plugin_result is success
   retries: 10
