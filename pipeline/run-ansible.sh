@@ -18,4 +18,4 @@ function die {
 PLAYBOOK=$1
 INVENTORY=$2
 
-ansible-playbook $PLAYBOOK -i $INVENTORY
+sudo ansible-playbook $PLAYBOOK -i $INVENTORY --vault-password-file ~/.vault-pass
