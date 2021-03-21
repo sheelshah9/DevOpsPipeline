@@ -33,3 +33,7 @@ Hence, we settled on using workflow-aggregator with DSL to make a pipeline. To g
 
 ### Screencast
  - [Milestone-1](https://www.youtube.com/watch?v=KBFULOgKfVI)
+ 
+### Opunit checks
+Some of the opunit checks performed by the TA are failing but we ran these checks in 3 different machines and they seem to be passing:  
+![image](https://github.ncsu.edu/cscdevops-spring2021/DEVOPS-21/blob/master/opunit_tests.png)

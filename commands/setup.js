@@ -31,8 +31,8 @@ exports.handler = async argv => {
 
 async function run(privateKey) {
 
-    let filePath = '/bakerx/pipeline/playbook.yml';
-    let inventoryPath = '/bakerx/pipeline/inventory.ini';
+    let filePath = '/bakerx/cm/playbook.yml';
+    let inventoryPath = '/bakerx/cm/inventory.ini';
 
     console.log(chalk.greenBright('Installing configuration server!'));
 
@@ -41,11 +41,11 @@ async function run(privateKey) {
     if( result.error ) { console.log(result.error); process.exit( result.status ); }
 
     console.log(chalk.blueBright('Running init script...'));
-    result = sshSync('/bakerx/pipeline/server-init.sh', 'vagrant@192.168.33.20');
+    result = sshSync('/bakerx/cm/server-init.sh', 'vagrant@192.168.33.20');
     if( result.error ) { console.log(result.error); process.exit( result.status ); }
 
     console.log(chalk.blueBright('Running ansible script to install jenkins...'));
-    result = sshSync(`/bakerx/pipeline/run-ansible.sh ${filePath} ${inventoryPath}`, 'vagrant@192.168.33.20');
+    result = sshSync(`/bakerx/cm/run-ansible.sh ${filePath} ${inventoryPath}`, 'vagrant@192.168.33.20');
     if( result.error ) { process.exit( result.status ); }
 
 

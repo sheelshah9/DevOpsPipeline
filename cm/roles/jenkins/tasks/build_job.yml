@@ -11,5 +11,5 @@
   become: true
 
 - name: build jenkins job
-  shell: jenkins-jobs update /bakerx/pipeline/roles/jenkins/templates/job.yml 
+  shell: jenkins-jobs update /bakerx/cm/roles/jenkins/templates/job.yml 
 
