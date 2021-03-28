@@ -13,3 +13,5 @@
 - name: build jenkins job
   shell: jenkins-jobs update /bakerx/cm/roles/jenkins/templates/job.yml 
 
+- name: build iTrust jenkins job
+  shell: jenkins-jobs update /bakerx/cm/roles/jenkins/templates/job_iTrust.yml 

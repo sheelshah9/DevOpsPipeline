@@ -1,0 +1,37 @@
+- job:
+    name: iTrust
+    project-type: pipeline
+    dsl: |
+          pipeline {
+                agent any
+                options {
+                   skipDefaultCheckout(true)
+               }
+               stages {
+                 stage('Source') {
+                  steps{
+                     script{
+                         sh "git clone https://$GH_USER:$GH_PWD@github.ncsu.edu/engr-csc326-staff/iTrust2-v8"
+                         sh "cp /bakerx/cm/roles/prerequisites/templates/application.yml ./iTrust2-v8/iTrust2/src/main/resources/"
+                         sh "rm ./iTrust2-v8/iTrust2/src/main/resources/application.yml.template"
+                      }
+                   }
+               }
+               stage('Test') {
+                steps{
+                  script{
+                        sh "cd ./iTrust2-v8/iTrust2/ && mvn clean test integration-test checkstyle:checkstyle"
+                        sh "cd ./iTrust2-v8/iTrust2/ && mvn package"
+                   }
+                   step([$class: 'JacocoPublisher', 
+                        execPattern: '**/*.exec',
+                        ])
+                    }
+               }
+              }  
+              post { 
+              always { 
+                 cleanWs()
+              }
+              }                
+              } 

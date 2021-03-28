@@ -1,9 +1,8 @@
 ---
 - name: Install Java
   apt:
-   name: ['openjdk-8-jre', 'openjdk-8-jdk']
+   name: ['openjdk-11-jdk']
    state: present
-   update_cache: yes
   become: true
 
 - name: Install Git
@@ -11,3 +10,66 @@
    name: git
    state: present
   become: true
+
+- name: install maven (and other packages if needed)
+  become: true
+  apt:
+   pkg: ['maven'] 
+   state: latest 
+   update_cache: yes 
+   cache_valid_time: 3600
+
+- name: Install MySQL
+  apt:
+   pkg: ['mysql-server'] 
+   update_cache: yes 
+   cache_valid_time: 3600
+   state: present
+  become: true
+
+- name: Start the MySQL service
+  become: true
+  service: 
+   name: mysql 
+   state: started
+   enabled: true
+
+
+- name: install pip3
+  apt: name=python3-pip state=present
+  tags: ansible
+  become: true
+
+- name: Install PyMySQL python package
+  pip:
+   name: PyMySQL
+
+- name: creating MYSQL admin user with admin password
+  mysql_user:
+   login_unix_socket: /var/run/mysqld/mysqld.sock
+   name: admin
+   password: admin
+   priv: '*.*:ALL'
+   state: present
+  become: true
+
+- name: Does the Google apt file exist?
+  command: test -f /etc/apt/sources.list.d/google-chrome.list
+  register: google_apt_exists
+  ignore_errors: true 
+
+- name: Add Google Chrome key
+  shell: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+  when: google_apt_exists.rc == 1
+
+- name: Add Google Chrome repo
+  copy: content="deb http://dl.google.com/linux/chrome/deb/ stable main" dest=/etc/apt/sources.list.d/google-chrome.list owner=root group=root mode=644
+  when: google_apt_exists.rc == 1
+
+- name: Update apt cache
+  apt: update_cache=yes
+  when: google_apt_exists.rc == 1
+
+- name: Install Google Chrome
+  apt: pkg=google-chrome-stable state=latest
+
