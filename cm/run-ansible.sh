@@ -18,4 +18,10 @@ function die {
 PLAYBOOK=$1
 INVENTORY=$2
 
-sudo ansible-playbook $PLAYBOOK -i $INVENTORY --vault-password-file ~/.vault-pass
+if [ -n "$3" ]
+then
+    sudo ansible-playbook $PLAYBOOK -i $INVENTORY --vault-password-file ~/.vault-pass --extra-vars "GH_USER=$3 GH_PASS=$4"
+else
+    sudo ansible-playbook $PLAYBOOK -i $INVENTORY --vault-password-file ~/.vault-pass
+fi
+
