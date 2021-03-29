@@ -5,9 +5,8 @@
    line: "{{ item.key }}={{ item.value}}"
   with_items: "{{ os_environment }}"
   become: true  
-     
+
 - name: source new variables
-  shell: source ~/.bashrc
+  shell: source /etc/environment
   args:
    executable: /bin/bash
-

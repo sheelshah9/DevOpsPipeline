@@ -16,6 +16,8 @@
    - workflow-aggregator
    - ws-cleanup
    - jacoco
+   - cloudbees-credentials
+   - credentials-binding
 
 - name: install pip3
   apt: name=python3-pip state=present

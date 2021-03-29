@@ -44,6 +44,30 @@
    line: "jenkins ALL=(ALL) NOPASSWD: ALL"
   become: true
 
+- name: Add GIT Hub NCSU credentials
+  become: yes
+  template: src=credentials.xml
+            dest=/var/lib/jenkins/credentials.xml
+
+- name: change username in credentials.xml file.
+  lineinfile:
+   backrefs: true
+   dest: /var/lib/jenkins/credentials.xml
+   regexp: '<username>'
+   line: "<username>{{ GH_USER }}</username>"
+   mode: 0644
+  become: true
+
+- name: change password in credentials.xml file.
+  lineinfile:
+   backrefs: true
+   dest: /var/lib/jenkins/credentials.xml
+   regexp: '<password>'
+   line: "<password>{{ GH_PASS }}</password>"
+   mode: 0644
+  become: true
+
+
 - name: Restart Jenkins to reflect changes
   service: name=jenkins state=restarted
   become: true
