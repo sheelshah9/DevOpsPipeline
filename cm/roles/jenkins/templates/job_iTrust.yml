@@ -9,13 +9,16 @@
                }
                stages {
                  stage('Source') {
-                  steps{
-                     script{
-                         sh "git clone https://$GH_USER:$GH_PWD@github.ncsu.edu/engr-csc326-staff/iTrust2-v8"
-                         sh "cp /bakerx/cm/roles/prerequisites/templates/application.yml ./iTrust2-v8/iTrust2/src/main/resources/"
-                         sh "rm ./iTrust2-v8/iTrust2/src/main/resources/application.yml.template"
-                      }
-                   }
+                   steps{
+                        script{
+                            withCredentials([usernamePassword(credentialsId: 'GIT_CRED', passwordVariable: 'GH_PASS', usernameVariable: 'GH_USER')]) 
+                                {
+                                   sh """git clone https://"$GH_USER":"$GH_PASS"@github.ncsu.edu/engr-csc326-staff/iTrust2-v8"""
+                                }
+                                sh "cp /bakerx/cm/roles/prerequisites/templates/application.yml ./iTrust2-v8/iTrust2/src/main/resources/"
+                                sh "rm ./iTrust2-v8/iTrust2/src/main/resources/application.yml.template"
+                        }
+                    }
                }
                stage('Test') {
                 steps{

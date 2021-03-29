@@ -48,40 +48,5 @@
   changed_when: false
 
 
-- uri:
-    url: 'http://localhost:9000/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)'
-    user: "{{ username }}"
-    password: "{{ password }}"
-    force_basic_auth: yes
-    return_content: yes
-  register: crumb_git
-
-- name: Create github credentials
-  uri:
-    method: POST
-    url: 'http://localhost:9000/credentials/store/system/domain/_/createCredentials'
-    user: "{{ username }}"
-    password: "{{ password }}"
-    force_basic_auth: yes
-    headers:
-      Jenkins-Crumb: "{{ crumb_git.content.split(':')[1] }}"
-      Cookie: "{{ crumb_git.set_cookie }}"
-    body: |
-      json={
-        "": "0",
-        "credentials": {
-          "scope": "GLOBAL",
-          "id": "github_credentials",
-          "username": "{{ GH_USER }}",
-          "password": "{{ GH_PASS }}",
-          "description": "Github credentials",
-          "$class": "com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl"
-        }
-      }  
-      #status_code: 302
-  register: _result
-  until: _result.status == 302
-  retries: 3
-  delay: 3
-
 - include_tasks: build_job.yml
+

@@ -15,13 +15,13 @@ exports.builder = yargs => {
             describe: 'Install the provided private key on the configuration server',
             type: 'string'
         }
-    }).positional('gh-user', {
-        alias: 'GH_USER',
+    }).positional('GH_USER', {
+        alias: 'gh-user',
         describe: 'Github username',
         type: 'string',
         nargs: 1
-    }).positional('gh-pass', {
-        alias: 'GH_PASS',
+    }).positional('GH_PASS', {
+        alias: 'gh-pass',
         describe: 'Github password',
         type: 'string',
         nargs: 1
@@ -49,10 +49,6 @@ async function run(privateKey, GH_USER, GH_PASS) {
 
     console.log(chalk.blueBright('Provisioning configuration server...'));
     let result = child.spawnSync(`bakerx`, `run config-srv focal --ip 192.168.33.20 --sync`.split(' '), {shell:true, stdio: 'inherit'} );
-    if( result.error ) { console.log(result.error); process.exit( result.status ); }
-
-    console.log(chalk.blueBright('Port forwarding...'));
-    result = child.spawnSync(`VBoxManage controlvm 'config-srv' natpf1 'jenkins,tcp,,9000,,9000'`, {shell:true, stdio:'inherit'});
     if( result.error ) { console.log(result.error); process.exit( result.status ); }
 
     console.log(chalk.blueBright('Running init script...'));
