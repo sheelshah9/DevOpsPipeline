@@ -6,35 +6,45 @@
                 agent any
                 options {
                    skipDefaultCheckout(true)
-               }
-               stages {
-                 stage('Source') {
-                   steps{
+                }
+                stages {
+                  stage('Build') {
+                    steps{
                         script{
                             withCredentials([usernamePassword(credentialsId: 'GIT_CRED', passwordVariable: 'GH_PASS', usernameVariable: 'GH_USER')]) 
                                 {
-                                   sh """git clone https://"$GH_USER":"$GH_PASS"@github.ncsu.edu/engr-csc326-staff/iTrust2-v8"""
+                                  sh """git clone https://"$GH_USER":"$GH_PASS"@github.ncsu.edu/engr-csc326-staff/iTrust2-v8"""
                                 }
                                 sh "cp /bakerx/cm/roles/prerequisites/templates/application.yml ./iTrust2-v8/iTrust2/src/main/resources/"
                                 sh "rm ./iTrust2-v8/iTrust2/src/main/resources/application.yml.template"
                         }
                     }
-               }
-               stage('Test') {
-                steps{
-                  script{
-                        sh "cd ./iTrust2-v8/iTrust2/ && mvn clean test integration-test checkstyle:checkstyle"
-                        sh "cd ./iTrust2-v8/iTrust2/ && mvn package"
-                   }
-                   step([$class: 'JacocoPublisher', 
-                        execPattern: '**/*.exec',
-                        ])
+                  }
+                stage('Test') {
+                  steps{
+                    script{
+                          sh "cd ./iTrust2-v8/iTrust2/ && mvn clean test integration-test checkstyle:checkstyle"
+                          sh "cd ./iTrust2-v8/iTrust2/ && mvn package"
                     }
-               }
-              }  
-              post { 
-              always { 
-                 cleanWs()
+                    step([$class: 'JacocoPublisher', 
+                          execPattern: '**/*.exec',
+                          ])
+                  }
+                } 
+
+                stage('Clean up'){
+                  steps{
+                    script{
+                      sh "mysql -u admin --password='admin' -e 'DROP DATABASE IF EXISTS iTrust2_test'"
+                      sh "killall chrome || true"
+                      sh "ss -tulpn | grep :9001 || true"
+                    }
+                  }
+                }
               }
+              post{ 
+                always{ 
+                  cleanWs()
+                }
               }                
-              } 
+          } 
