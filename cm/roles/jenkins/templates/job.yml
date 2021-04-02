@@ -24,6 +24,14 @@
                                }
                             }
                         }
+                    stage('Static Analysis'){
+                        steps{
+                            script{
+                                sh "cd /bakerx/cm/static_analysis && npm install"
+                                sh "node /bakerx/cm/static_analysis/analysis.js ./checkbox.io/server-side/site/"
+                            }
+                        }
+                    }
                     stage('Test') {
                         steps{
                             script{
