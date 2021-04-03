@@ -27,7 +27,7 @@
                     stage('Static Analysis'){
                         steps{
                             script{
-                                sh "cd /bakerx/cm/static_analysis && sudo npm install"
+                                sh "cd /bakerx/cm/static_analysis && sudo npm install --ignore-scripts"
                                 sh "node /bakerx/cm/static_analysis/analysis.js ./checkbox.io/server-side/site/"
                             }
                         }
