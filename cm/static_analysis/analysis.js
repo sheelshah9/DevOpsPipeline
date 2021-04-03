@@ -80,6 +80,27 @@ function complexity(filePath, builders)
 			builder.Length = node.loc.end.line - node.loc.start.line;
 
 			builders[builder.FunctionName] = builder;
+
+
+		        // functiont for Max Chain calculation
+
+
+			let current_chain_count = 0
+			traverseWithParents(node, (nodeChild) =>{
+
+                	if(nodeChild.type == 'MemberExpression'){
+                    		traverseWithParents(nodeChild, (nodeChildChild) =>{
+                        		if(nodeChildChild.type == 'MemberExpression'){
+                            		current_chain_count += 1;
+                        		}
+                    		})
+                	}
+
+                	builder.MaxMessageChain = Math.max(builder.MaxMessageChain, current_chain_count);
+                	//update current_chain_count to 0 in order to calculate chain for next function
+			current_chain_count = 0;
+            		})
+
 		}
 
 	});
