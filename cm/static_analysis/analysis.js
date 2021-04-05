@@ -101,6 +101,31 @@ function complexity(filePath, builders)
 			current_chain_count = 0;
             		})
 
+
+			 //Max Nesting Depth Calculation
+            		let maximum_nesting_depth;
+			let subtract;
+			traverseWithParents(node, (nodeChild) => {
+				//checking the "if" condition 
+				if (nodeChild.type == 'IfStatement') {
+					traverseWithParents(nodeChild, (nodeChildChild) => {
+						if (nodeChildChild.type == 'IfStatement') {
+
+							if(nodeChildChild.nextSibling){
+								subtract += 1;
+							}
+							maximum_nesting_depth += 1;
+						}
+					})
+					maximum_nesting_depth -= subtract;
+					subtract = 0;
+					if (maximum_nesting_depth > builder.MaxNestingDepth) {
+						builder.MaxNestingDepth = maximum_nesting_depth;
+                          }
+				}
+			              maximum_nesting_depth = 0;
+			})
+
 		}
 
 	});
