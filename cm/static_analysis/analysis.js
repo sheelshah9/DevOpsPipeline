@@ -3,7 +3,11 @@ const options = {tokens:true, tolerant: true, loc: true, range: true };
 const fs = require("fs");
 const chalk = require('chalk');
 var path = require('path');
-
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require("constants");
+const maxLOC = 100;
+const maxMessageChain = 10;
+const maxNestingDepth = 5;
+var violations = 0;
 
 function main()
 {
@@ -31,22 +35,52 @@ function main()
 				searchDir(filename,filter); //recurse
 			}
 			else if (filename.match(/.*\.(js)\b/ig)) {
-				console.log( "Parsing ast and running static analysis...");
+				// console.log( "Parsing ast and running static analysis...");
 				var builders = {};
 				complexity(filename, builders);
-				console.log( "Complete.");
+				// console.log( "Complete.");
 
 
 				// Report
+				var temp = 0;
+				var current_violations = violations;
 				for( var node in builders ){
 					var builder = builders[node];
-					builder.report();
+					if (temp==0) builder.report();
+					var flag = false;
+					if (builder.Length>maxLOC){
+						console.log(chalk`{red.underline Violation:} Long method detected`);
+						flag = true;
+						violations++;
+					}
+					if (builder.MaxMessageChain>maxMessageChain ){
+						console.log(chalk`{red.underline Violation:} Long message chain detected`);
+						flag = true;
+						violations++;
+					}
+					if (builder.MaxNestingDepth>maxNestingDepth){
+						console.log(chalk`{red.underline Violation:} Max nesting depth exceeded`);
+						flag = true;
+						violations++;
+					}
+					if (flag){
+						builder.report();
+					}
+					temp++;
+				}
+
+				if (violations==current_violations){
+					console.log("No violations detected\n");
 				}
 			};
 		};
 	};
 	
 	searchDir(filePath,'.js');
+
+	if (violations>0){
+		throw Error(violations+" violations detected. Failing build...");
+	}
 	
 
 }
@@ -82,28 +116,27 @@ function complexity(filePath, builders)
 			builders[builder.FunctionName] = builder;
 
 
-		        // functiont for Max Chain calculation
-
+		    // functiont for Max Chain calculation
 
 			let current_chain_count = 0
 			traverseWithParents(node, (nodeChild) =>{
 
-                	if(nodeChild.type == 'MemberExpression'){
-                    		traverseWithParents(nodeChild, (nodeChildChild) =>{
-                        		if(nodeChildChild.type == 'MemberExpression'){
-                            		current_chain_count += 1;
-                        		}
-                    		})
-                	}
+				if(nodeChild.type == 'MemberExpression'){
+						traverseWithParents(nodeChild, (nodeChildChild) =>{
+							if(nodeChildChild.type == 'MemberExpression'){
+								current_chain_count += 1;
+							}
+						})
+				}
 
-                	builder.MaxMessageChain = Math.max(builder.MaxMessageChain, current_chain_count);
-                	//update current_chain_count to 0 in order to calculate chain for next function
-			current_chain_count = 0;
-            		})
+				builder.MaxMessageChain = Math.max(builder.MaxMessageChain, current_chain_count);
+				//update current_chain_count to 0 in order to calculate chain for next function
+				current_chain_count = 0;
+            })
 
 
 			 //Max Nesting Depth Calculation
-            		let maximum_nesting_depth;
+            let maximum_nesting_depth;
 			let subtract;
 			traverseWithParents(node, (nodeChild) => {
 				//checking the "if" condition 
@@ -121,12 +154,12 @@ function complexity(filePath, builders)
 					subtract = 0;
 					if (maximum_nesting_depth > builder.MaxNestingDepth) {
 						builder.MaxNestingDepth = maximum_nesting_depth;
-                          }
+                    }
 				}
-			              maximum_nesting_depth = 0;
+			    maximum_nesting_depth = 0;
 			})
 
-		}
+			}
 
 	});
 
@@ -149,9 +182,9 @@ class FunctionBuilder
 	threshold() {
 
         const thresholds = {
-            MaxNestingDepth: [{t: 5, color: 'red'}, {t: 3, color: 'yellow'}],
-            MaxMessageChain: [{t: 10, color: 'red'}, {t: 7, color: 'yellow'}],
-            Length: [{t: 100, color: 'red'}, {t: 70, color: 'yellow'} ]
+            MaxNestingDepth: [{t: maxNestingDepth, color: 'red'}, {t: 3, color: 'yellow'}],
+            MaxMessageChain: [{t: maxMessageChain, color: 'red'}, {t: 7, color: 'yellow'}],
+            Length: [{t: maxLOC, color: 'red'}, {t: 70, color: 'yellow'} ]
         }
 
         const showScore = (id, value) => {
