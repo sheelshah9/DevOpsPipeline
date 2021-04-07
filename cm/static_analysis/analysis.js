@@ -42,36 +42,23 @@ function main()
 
 
 				// Report
-				var temp = 0;
-				var current_violations = violations;
 				for( var node in builders ){
 					var builder = builders[node];
-					if (temp==0) builder.report();
-					var flag = false;
 					if (builder.Length>maxLOC){
 						console.log(chalk`{red.underline Violation:} Long method detected`);
-						flag = true;
 						violations++;
 					}
 					if (builder.MaxMessageChain>maxMessageChain ){
 						console.log(chalk`{red.underline Violation:} Long message chain detected`);
-						flag = true;
 						violations++;
 					}
 					if (builder.MaxNestingDepth>maxNestingDepth){
 						console.log(chalk`{red.underline Violation:} Max nesting depth exceeded`);
-						flag = true;
 						violations++;
 					}
-					if (flag){
-						builder.report();
-					}
-					temp++;
+					builder.report();
 				}
 
-				if (violations==current_violations){
-					console.log("No violations detected\n");
-				}
 			};
 		};
 	};
