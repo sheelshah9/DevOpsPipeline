@@ -11,6 +11,11 @@
     "chalk": "^4.1.0",
     "jenkins": "^0.28.1",
     "jenkins-log-stream": "^2.0.0",
-    "yargs": "^15.4.1"
+    "yargs": "^15.4.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "random-js": "^2.1.0",
+    "stacktrace-parser": "^0.1.9",
+    "rimraf": "^3.0.2"
   }
 }
