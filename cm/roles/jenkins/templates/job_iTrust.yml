@@ -17,7 +17,8 @@
                                 }
                                 sh "cp /bakerx/cm/roles/prerequisites/templates/application.yml ./iTrust2-v8/iTrust2/src/main/resources/"
                                 sh "rm ./iTrust2-v8/iTrust2/src/main/resources/application.yml.template"
-                        }
+                                sh "cp /bakerx/cm/roles/prerequisites/templates/pom.xml ./iTrust2-v8/iTrust2/"
+                    }
                     }
                   }
                 stage('Test') {
@@ -27,8 +28,25 @@
                           sh "cd ./iTrust2-v8/iTrust2/ && mvn package"
                     }
                     step([$class: 'JacocoPublisher', 
-                          execPattern: '**/*.exec',
+                                execPattern: '**/*.exec',
+                                changeBuildStatus: true,
+                                minimumInstructionCoverage: '20',
+                                minimumBranchCoverage: '20',
+                                minimumComplexityCoverage: '20',
+                                minimumLineCoverage: '20',
+                                minimumMethodCoverage: '20',
+                                minimumClassCoverage: '20',
+                                maximumInstructionCoverage: '80',
+                                maximumBranchCoverage: '80',
+                                maximumComplexityCoverage: '80',
+                                maximumLineCoverage: '80',
+                                maximumMethodCoverage: '80',
+                                maximumClassCoverage: '80'
                           ])
+
+                    recordIssues(enabledForFailure: true, aggregatingResults: true, 
+                                  tool: checkStyle(pattern: '**/checkstyle-result.xml'))
+
                   }
                 } 
 
