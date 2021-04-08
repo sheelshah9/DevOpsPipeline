@@ -36,12 +36,12 @@
                                 minimumLineCoverage: '20',
                                 minimumMethodCoverage: '20',
                                 minimumClassCoverage: '20',
-                                maximumInstructionCoverage: '80',
-                                maximumBranchCoverage: '80',
-                                maximumComplexityCoverage: '80',
-                                maximumLineCoverage: '80',
-                                maximumMethodCoverage: '80',
-                                maximumClassCoverage: '80'
+                                maximumInstructionCoverage: '60',
+                                maximumBranchCoverage: '40',
+                                maximumComplexityCoverage: '55',
+                                maximumLineCoverage: '60',
+                                maximumMethodCoverage: '60',
+                                maximumClassCoverage: '90'
                           ])
 
                     recordIssues(enabledForFailure: true, aggregatingResults: true, 
