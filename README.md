@@ -1,3 +1,36 @@
+## Milestone 2 Report :
+
+### Steps:
+ - Create a .vault-pass file inside the root folder of DEVOPS-21 repository.
+   - Content of this file -> csc-devops-2020
+ - Commands to execute: 
+    - `npm install`
+    - `npm link`
+    - `pipeline setup --gh-user <username> --gh-pass <password>`
+    - `pipeline build iTrust -u <admin> -p <admin>`
+    - `pipeline useful-tests -c 1000 --gh-user <username> --gh-pass <password>`
+    - `Pipeline build checkbox.io -u <admin> -p <admin>`
+
+`NOTE:` <br>
+ `- Java and MySql takes more than usual time to install in VM` <br>
+
+### Issues and experiences:
+
+ - #### Mutation Testing:
+    - The main issue we faced here is about verification.
+        - How to verify if code gets mutated?
+    - Parse the console output in order to get information about failed tests.
+    - Long wait time before getting the output of mutation coverage and verifying final results.
+    
+ - #### Adding Github credentials using Jenkins credential manager:
+    - For our NCSU (Enterprise) Github account, the password contains special characters like "@" and it causes an issue to parse the link to clone the iTrust repository.
+        - So finally we decided to use a Github personal token for authentication.
+    - Moreover, configuring the credential.xml file took time to finally set proper credentials inside it.
+   
+### Screencast
+ - [Milestone-1](https://www.youtube.com/watch?v=KBFULOgKfVI)
+ 
+ 
 ## Milestone 1 Report :
 
 ### Steps:
