@@ -25,20 +25,17 @@ class mutater {
     static mutateStr(str) {
         var array = str.split("\n");
         let n = array.length
-        // console.log(n)
         let tenPercent = n / 5
         let rSet = new Set()
         while(rSet.size < tenPercent) {
             rSet.add(mutater._random.integer(0, array.length - 1))
         }
-        //console.log(rSet)
         var cp = [];
         for (var i = 0; i < array.length; i++){
             let elem;
             if(rSet.has(i)) {
 
                 elem = array[i]
-                // console.log(i);
                 if (!isImportOrPackage(elem.trim())) {
                     // swap == with !=
                     elem = elem.replace(/==/g, ' != ')
@@ -66,13 +63,9 @@ class mutater {
             else {
                 elem = array[i];
             }
-            // console.log(elem)
             cp.push(elem)
 
         }
-
-         // console.log(cp)
-
         return cp.join('\n')
     }
 
@@ -97,7 +90,6 @@ function mutationTesting(paths,iterations, path_mutation_dir)
 
     var testResults = [];
     var tmpdirpath = path.join(srcDirectory,'tmp');
-    // var modified_files = paths.length/10;
     passedTests = 0;
     
     if (!fs.existsSync(path_mutation_dir)) {
@@ -105,8 +97,7 @@ function mutationTesting(paths,iterations, path_mutation_dir)
     }
     else {
     	rimraf.sync(path_mutation_dir)
-	fs.mkdirSync(path_mutation_dir);
-   
+	    fs.mkdirSync(path_mutation_dir);
     }
 
 
@@ -120,50 +111,46 @@ function mutationTesting(paths,iterations, path_mutation_dir)
 	if (!fs.existsSync(iterDirPath)){
 	    fs.mkdirSync(iterDirPath);
 	}
-        var modfilescache = {};
-        // console.log(`\nModified Files in iteration ${iter}:\n`);
-        for (var i = 0; i < 1; i++) {
-            var filepath = paths[mutater._random.integer(0,paths.length-1)];
-            //console.log(filepath);
-            var filesplit = filepath.split(path.sep);
-            var filename = filesplit[filesplit.length-1];
-            var src = fs.readFileSync(filepath,'utf-8');
-            var dstpath = path.join(tmpdirpath, filename);
-            //If file already mutated, skip the file
-            if(modfilescache.hasOwnProperty(dstpath))
-                continue;
-            //Store the path to modified files in a dict
-            modfilescache[dstpath] = filepath;
-            //Copy the original file to tmp folder
-            try {
-                fs.copyFileSync(filepath, dstpath)
-            }catch (err) {
-                throw err;
-            }
-            //Mutate the file
-            mutatedString = mutater.mutateStr(src);
-            //Write back the mutated file to original location
-            //console.log(mutatedString)
-            fs.writeFileSync(filepath, mutatedString, (err) => {
-                if (err) throw err;
-            });
-		let iterFilePath = path.join(iterDirPath, filename)
-            fs.writeFileSync(iterFilePath, mutatedString, (err) => {
-                if (err) throw err;
-            });
+        var modfilescache = {};        
+        var filepath = paths[mutater._random.integer(0,paths.length-1)];
+        var filesplit = filepath.split(path.sep);
+        var filename = filesplit[filesplit.length-1];
+        var src = fs.readFileSync(filepath,'utf-8');
+        var dstpath = path.join(tmpdirpath, filename);
+        
+        //If file already mutated, skip the file
+        if(modfilescache.hasOwnProperty(dstpath))
+            continue;
 
+        //Store the path to modified files in a dict
+        modfilescache[dstpath] = filepath;
+
+        //Copy the original file to tmp folder
+        try {
+            fs.copyFileSync(filepath, dstpath)
+        }catch (err) {
+            throw err;
         }
+
+        //Mutate the file
+        mutatedString = mutater.mutateStr(src);
+
+        //Write back the mutated file to original location
+        fs.writeFileSync(filepath, mutatedString, (err) => {
+            if (err) throw err;
+        });
+        let iterFilePath = path.join(iterDirPath, filename)
+        fs.writeFileSync(iterFilePath, mutatedString, (err) => {
+            if (err) throw err;
+        });
+
 
         try
         {
             //Run the test suite
             var output = spawnSync(`cd ${srcDirectory} && mvn clean test verify org.apache.maven.plugins:maven-checkstyle-plugin:3.1.0:checkstyle`, { encoding: 'utf-8', stdio: 'pipe' , shell: true });
             //Push the test results to the array
-          //  console.log("++++++++")
-           // console.log(iter)
-	//	console.log(output.stdout)
             testResults.push( {input: iter, stack: output.stdout} );
-
         }
         catch(e)
         {
@@ -178,7 +165,6 @@ function mutationTesting(paths,iterations, path_mutation_dir)
 
     failedTests = {};
     // Get failed tests in each iteration
-    // console.log(testResults)
     let countFailed = 0
 
     for( var i =0; i < testResults.length; i++ )
@@ -186,59 +172,48 @@ function mutationTesting(paths,iterations, path_mutation_dir)
         let flag = false
         var failed = testResults[i];
         var msg = failed.stack.split("\n");
-	//console.log(msg)
-	let mainName = "FAILURE!"
+
+	    let mainName = "FAILURE!"
         msg.filter(function(line) {
             if(line.includes("<<< FAILURE!") || line.includes("<<< ERROR!") || line.includes("FAILURE!") || line.includes("ERROR!") ){
                 var temp = line.split(" ");
-	//	    console.log(temp[1])
                 var test =  temp[1].substring(temp[1].indexOf("(") + 1,temp[1].indexOf(")")) + "." + temp[1].split("(")[0];
-         //       console.log(test)
 		let currDir = temp[temp.length - 1]
 	    if(currDir !=='FAILURE!' && currDir !== 'ERROR!')
 		    mainName = currDir 
 	    test = mainName + test
-	//    console.log(test)
-                if (test in failedTests){
-                    let arr = failedTests[test]
+        if (test in failedTests){
+            let arr = failedTests[test]
 			arr.push(failed.input)
-
 			failedTests[test] = arr;
 		}
-                else
-                    failedTests[test] = [failed.input]
+        else
+            failedTests[test] = [failed.input]
 
-                if(!flag) {
-                    countFailed += 1
-                    flag = true
-                }
-            }
+        if(!flag) {
+            countFailed += 1
+            flag = true
+        }
+        }
         });
     }
-    //console.log(countFailed)
 
     // Create items array
     var items = Object.keys(failedTests).map(function(key) {
         return [key, failedTests[key]];
     });
-    // console.log(items)
 
     // Sort the array based on the second element
     items.sort(function(first, second) {
         return second[1] - first[1];
     });
-    // console.log(items)
+
     //Print test results
 	let percentage = (countFailed / iterations ) * 100
     console.log(`Overall mutation coverage: ${countFailed}/${iterations} (${percentage}%) mutations caught by the test suite.`)
 	console.log("Useful tests" + "\n" + "============")
-	//console.log(items.length)
     items.forEach(item => {
 	    let splitted = item[0].split(".")
-	    //console.log("h-----------------------------------------")
-	    //console.log(splitted)
-
-        //console.log(splitted[splitted.length - 1].substring(0, 5) )
         if (splitted[splitted.length - 1].substring(0, 4)  === "test") {
             console.log(`${item[1].length}/${iterations} ` + item[0])
 		let failedIter = item[1]
@@ -247,19 +222,14 @@ function mutationTesting(paths,iterations, path_mutation_dir)
 			console.log(`\t- /home/vagrant/mutation_dir/${failedIter[i]}/${filenames[0]}`)
 		}
         }
-
     });
 }
 
 
 function revertfiles(modfilescache, dirpath){
-    // console.log("-----------------------------xxxxxxxxxxxxxxxxxxx")
-    //console.log(dirpath)
-    //console.log(modfilescache)
     if (fs.existsSync(dirpath)) {
         fs.readdirSync(dirpath).forEach((file, index) => {
             const curPath = path.join(dirpath, file);
-      //       console.log(curPath + "\n" +modfilescache[curPath]);
             try {
                 fs.copyFileSync(curPath, modfilescache[curPath])
             }catch (err) {
@@ -280,12 +250,8 @@ function getsourcepath(){
 }
 
 function traverseDir(dir,srcpaths) {
-    // console.log(dir)
-    // console.log(srcpaths)
     fs.readdirSync(dir).forEach(file => {
-        // console.log(file)
         let fullPath = path.join(dir, file);
-
         if (fs.lstatSync(fullPath).isDirectory()) {
             traverseDir(fullPath , srcpaths);
         } else {
