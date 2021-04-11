@@ -14,6 +14,9 @@
 `NOTE:` <br>
  `- Java and MySql takes more than usual time to install in VM` <br>
 
+ - Files containing the full output of the useful-tests command with 1000 (700 + 300) iterations can be found [here](https://github.ncsu.edu/cscdevops-spring2021/DEVOPS-21/tree/master/fuzzing_output).
+    - Because of the amount of time it takes to execute 1000 iterations, we divided this task on 2 machines and uploaded the mutation results here.
+
 ### Issues and experiences:
 
  - #### Mutation Testing:
@@ -28,7 +31,7 @@
     - Moreover, configuring the credential.xml file took time to finally set proper credentials inside it.
    
 ### Screencast
- - [Milestone-1](https://www.youtube.com/watch?v=KBFULOgKfVI)
+ - [Milestone-2](https://youtu.be/Qw9UUdbGImw)
  
  
 ## Milestone 1 Report :
