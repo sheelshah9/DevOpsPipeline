@@ -1,0 +1,26 @@
+---
+- hosts: localhost
+
+  roles:
+    #- prerequisites
+      - set_env
+        #  - jenkins
+        #- nodejs
+        #- mongodb
+- hosts: checkbox
+  tasks:
+   - name: pinging
+     ping:
+
+- hosts: monitoring
+  tasks:
+   - name: pinging
+     ping:
+
+- hosts: iTrust
+  tasks:
+   - name: pinging
+     ping:
+
+
+      

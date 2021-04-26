@@ -42,7 +42,7 @@ exports.handler = async argv => {
 
 async function run(privateKey, GH_USER, GH_PASS) {
 
-    let filePath = '/bakerx/cm/playbook.yml';
+    let filePath = '/bakerx/cm/playbook_config_srv.yml';
     let inventoryPath = '/bakerx/cm/inventory.ini';
 
     console.log(chalk.greenBright('Installing configuration server!'));

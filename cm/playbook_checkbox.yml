@@ -1,0 +1,12 @@
+---
+- hosts: checkbox
+  tasks:
+   - name: pinging
+     ping:
+  roles:
+   - prerequisites
+     #- set_env
+     #- jenkins
+     #- nodejs
+     #- mongodb
+

@@ -1,5 +1,5 @@
 ---
-- name: Insert a line at the end of a file.
+- name: Set Env Variables.
   lineinfile:
    path: /etc/environment
    line: "{{ item.key }}={{ item.value}}"
@@ -10,3 +10,12 @@
   shell: source /etc/environment
   args:
    executable: /bin/bash
+
+- name: Copy private key to .ssh/private_key
+  template:
+   src: private_key
+   dest: "/home/vagrant/.ssh/private_key"
+   mode: '0600'
+  become: true
+
+
