@@ -1,12 +1,49 @@
 ---
 - hosts: checkbox
-  tasks:
-   - name: pinging
-     ping:
-  roles:
-   - prerequisites
-     #- set_env
-     #- jenkins
-     #- nodejs
-     #- mongodb
+  tasks:  
+   - name: Create a directory if it does not exist
+     file:
+      path: /var/www/checkbox.io
+      state: directory
+      mode: '0755'
+
+   - name: Clone checkbox.io repo
+     git:
+      repo: https://github.com/chrisparnin/checkbox.io.git
+      dest: /var/www/checkbox.io
+      version: master
+     ignore_errors: true
+
+   - name: include role to install and configure nginx
+     include_role:
+       name: nginx
+
+   - name: include role to install nodejs
+     include_role:
+       name: nodejs
+
+   - name: Install "forever" node.js package globally.
+     npm:
+      name: forever
+      global: yes
+   
+   - name: install dotenv
+     shell: "cd /var/www/checkbox.io/server-side/site/ && npm install dotenv --save"
+     ignore_errors: true
+     become: yes
+
+   - name: restart nginx
+     service:
+      name: nginx
+      state: restarted
+     become: yes
+
+   - name: Install packages based on package.json.
+     npm:
+      path: "/var/www/checkbox.io/server-side/site/"
+
+   - name: start server using forever processes if running
+     shell: "cd /var/www/checkbox.io/server-side/site && forever start server.js"
+     ignore_errors: true
+     become: yes
 

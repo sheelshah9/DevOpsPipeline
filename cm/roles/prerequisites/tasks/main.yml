@@ -1,6 +1,7 @@
 ---
 - name: Install Java
   apt:
+   update_cache: yes
    name: ['openjdk-11-jdk-headless']
    state: present
   become: true

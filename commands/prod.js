@@ -96,10 +96,10 @@ class DigitalOceanProvider
 
 					if(name == "checkbox"){
 						writeFile("checkbox", ip);
-					}else if(name == "iTrust"){
-						writeFile("iTrust", ip);
-					}else if(name == "monitoring"){
-						writeFile("monitoring", ip);
+					}else if(name == "itrust"){
+						writeFile("itrust", ip);
+					}else if(name == "monitor"){
+						writeFile("monitor", ip);
 					}
 					clearInterval(ping);
 				}
@@ -128,17 +128,17 @@ async function provision(argv)
 	let client = new DigitalOceanProvider();
     
 	// Create an droplet with the specified name, region, and image
-	var names = ["checkbox", "iTrust", "monitoring"]
+	var names = ["checkbox", "itrust", "monitor"]
 	for (var i = 0; i < names.length; i++) {
 		var name = names[i]
 		var region = "nyc3"; // Fill one in from #1
-		var image = "ubuntu-16-04-x32"; // Fill one in from #2
+		var image = "ubuntu-20-04-x64"; // Fill one in from #2
 		await client.createDroplet(name, region, image);
 	}
     
 }
 
-exports.command = '$0 prod <name>';
+exports.command = 'prod <name>';
 exports.desc = 'build configuration server';
 exports.builder = yargs => {
     yargs.positional('up', {

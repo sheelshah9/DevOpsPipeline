@@ -1,0 +1,57 @@
+---
+#- include_vars: pass_vars.yml 
+
+- name: ensure nginx is at the latest version
+  apt: name=nginx state=latest
+
+- name: start nginx
+  service:
+   name: nginx
+   state: started
+  become: yes
+
+- name: copy the nginx config file
+  copy:
+   src: /var/www/checkbox.io/local-conf/nginx.conf
+   dest: /etc/nginx/
+   remote_src: yes
+  become: yes
+
+- name: copy the nginx default file and restart nginx 
+  copy:
+   src: "/var/www/checkbox.io/local-conf/default"
+   dest: "/etc/nginx/sites-available"
+   remote_src: yes
+  become: yes
+
+- name: change root in default file.
+  lineinfile:
+   backrefs: true
+   dest: "/etc/nginx/sites-available/default"
+   regexp: 'root'
+   line: 'root /var/www/checkbox.io/public_html/;'
+   mode: 0644
+  become: true
+
+- name: Creating a file with content
+  copy:
+   dest: "/var/www/checkbox.io/server-side/site/.env"
+   content: |
+        APP_PORT={{ APP_PORT }}
+
+- lineinfile:
+   path: "/var/www/checkbox.io/server-side/site/server.js"
+   insertbefore: BOF
+   line: "require('dotenv').config();"
+
+- name: restart nginx
+  service:
+   name: nginx
+   state: restarted
+  become: yes
+
+
+
+
+
+ 
