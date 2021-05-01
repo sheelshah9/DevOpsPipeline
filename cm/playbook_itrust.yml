@@ -1,26 +1,35 @@
 ---
-- hosts: localhost
-
+- hosts: itrust
   roles:
-    #- prerequisites
-      - set_env
-        #  - jenkins
-        #- nodejs
-        #- mongodb
-- hosts: checkbox
+   - prerequisites
+
   tasks:
-   - name: pinging
-     ping:
+   - name: Allow port
+     shell: "ufw allow 9090/tcp && systemctl restart ufw"
+     become: true
 
-- hosts: monitoring
-  tasks:
-   - name: pinging
-     ping:
+   - name: Node.js - Get script
+     get_url:
+      url: "http://apache.cs.utah.edu/tomcat/tomcat-9/v9.0.45/bin/apache-tomcat-9.0.45.tar.gz"
+      dest: "~/"
 
-- hosts: iTrust
-  tasks:
-   - name: pinging
-     ping:
+   - name: untar tomcat
+     shell: "tar -xvzf ~/apache-tomcat-9.0.45.tar.gz"
+   
+   - name: update config-file
+     copy:
+      src: "/bakerx/cm/deploy_config_files/server.xml" 
+      dest: "~/apache-tomcat-9.0.45/conf/server.xml"
+     become: true 
 
+   - name: copy war file
+     copy:
+      src: "/home/vagrant/iTrust2.war"
+      dest: "~/apache-tomcat-9.0.45/webapps/"
 
-      
+   - name: make startup file executable
+     shell: "cd ~/apache-tomcat-9.0.45/bin/ && chmod +x *.sh"
+
+   - name: start tomcat
+     shell: "nohup bash ~/apache-tomcat-9.0.45/bin/startup.sh &"
+     register: cmd
