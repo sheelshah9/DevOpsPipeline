@@ -1,3 +1,45 @@
+## Milestone 3 Report :
+
+### Steps:
+ - Create a .vault-pass file inside the root folder of DEVOPS-21 repository.
+   - Content of this file -> csc-devops-2020
+ - Commands to execute: 
+    - `npm install`
+    - `npm link`
+    - `pipeline setup --gh-user <username> --gh-pass <password>`
+    - `pipeline prod up --api-token <digital-ocean-api token>`
+    - `pipeline deploy checkbox.io -i inventory.ini`
+       - If manually providing inventory.ini file, then put it inside cm/ folder.
+    - `pipeline build iTrust -u <admin> -p <admin>`
+     - `pipeline deploy iTrust -i inventory.ini`
+       - If manually providing inventory.ini file, then put it inside cm/ folder.
+    - `pipeline canary master broken`
+    
+`NOTE:` <br>
+ `- We have used ssh keys in order to provision droplet in digital ocean. So for that follow below steps before running pipeline prod up`:
+    - create ssh (private-public key pair) using keygen. 
+    - Add private key to /cm/roles/set_env/templates/private_key file
+    - Add public key to digital ocean and copy the fingerprint of that key.
+    - set environment variable FINGERPRINT=<string copied above>
+ 
+ `- Tomcat is running on port 9090 (instead of default 8080 port). And so the url after deploy will be IP:9090/iTrust2` <br>
+ `- Provide digital ocean api-token when running prod up command`
+
+### Issues and experiences:
+
+ - #### Configuring Tomcat:
+    - One of the task was to deploy application in tomcat server
+        - The issue we faced here is configuring tomcat to run on port where no other app/service is running. 
+        - Initially, we used default 8080 port but it is already used by other service and so changing that and configuring using ansible is a little bit difficult.
+        
+ - #### Canary Analysis:
+    - For this task we provisoned 3 vm (blue, green and proxy). Blue and green will be used for deployment. While proxy will handle traffic ,monitoring and load.
+    - The difficulty we faced in implementing this structure is to setup redis client to send (simulate) traffic to particular server.
+   
+### Screencast
+ - [Milestone-3](https://youtu.be/Qw9UUdbGImw)
+ 
+
 ## Milestone 2 Report :
 
 ### Steps:
