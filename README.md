@@ -15,15 +15,15 @@
        - If manually providing inventory.ini file, then put it inside cm/ folder.
     - `pipeline canary master broken`
     
-`NOTE:` <br>
- `- We have used ssh keys in order to provision droplet in digital ocean. So for that follow below steps before running pipeline prod up`:
-    - create ssh (private-public key pair) using keygen. 
-    - Add private key to /cm/roles/set_env/templates/private_key file
-    - Add public key to digital ocean and copy the fingerprint of that key.
-    - set environment variable FINGERPRINT=<string copied above>
+ #### NOTE: 
+- We have used ssh keys in order to provision droplet in digital ocean. So for that follow below steps before running pipeline prod up`: <br>
+    - create ssh (private-public key pair) using keygen. <br>
+    - Add private key to /cm/roles/set_env/templates/private_key file. <br>
+    - Add public key to digital ocean and copy the fingerprint of that key.  <br>
+    - set environment variable FINGERPRINT= `<string copied above>`
  
- `- Tomcat is running on port 9090 (instead of default 8080 port). And so the url after deploy will be IP:9090/iTrust2` <br>
- `- Provide digital ocean api-token when running prod up command`
+- Tomcat is running on port 9090 (instead of default 8080 port). And so the url after deploy will be IP:9090/iTrust2`.
+- Provide digital ocean api-token when running prod up command.
 
 ### Issues and experiences:
 
