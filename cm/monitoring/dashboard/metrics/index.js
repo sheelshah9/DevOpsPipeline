@@ -186,14 +186,14 @@ function start(app)
 function updateHealth(server)
 {
 	if(server.name == 'blue-srv'){
-		blue_stats.cpu.push(server.cpu);
-		blue_stats.latency.push(server.latency);
-		blue_stats.memory.push(server.memoryLoad);
+		blue_stats["cpu"].push(server.cpu);
+		blue_stats["latency"].push(server.latency);
+		blue_stats["memory"].push(server.memoryLoad);
 
 	}else if(server.name == 'green-srv'){
-		green_stats.cpu.push(server.cpu);
-		green_stats.latency.push(server.latency);
-		green_stats.memory.push(server.memoryLoad);
+		green_stats["cpu"].push(server.cpu);
+		green_stats["latency"].push(server.latency);
+		green_stats["memory"].push(server.memoryLoad);
 	}
 
 	if(current_time == 120000){

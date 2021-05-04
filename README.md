@@ -37,7 +37,7 @@
     - The difficulty we faced in implementing this structure is to setup redis client to send (simulate) traffic to particular server.
    
 ### Screencast
- - [Milestone-3](https://youtu.be/Qw9UUdbGImw)
+ - [Milestone-3](https://drive.google.com/file/d/1L7z5gJICKZ6CGDCb7l2RymGaHFpu5PTI/view?usp=sharing)
  
 
 ## Milestone 2 Report :
